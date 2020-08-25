@@ -1,5 +1,6 @@
 package com.algaworks.algamoney.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,5 +23,11 @@ public class Pessoa {
 
     @Embedded
     private Endereco endereco;
+
+    @JsonIgnore
+    @Transient
+    public Boolean isInativo() {
+        return !this.ativo;
+    }
 
 }
