@@ -7,6 +7,8 @@ import com.algaworks.algamoney.api.service.exception.PessoaInexistenteOuInativaE
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +31,9 @@ public class LancamentoResource {
     private MessageSource messageSource;
 
     @GetMapping
-    public ResponseEntity pesquisa(LancamentoFilter lancamentoFilter) {
-        List<Lancamento> lancamentos = lancamentoService.listar(lancamentoFilter);
-        return ResponseEntity.ok(lancamentos);
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Lancamento> pesquisa(LancamentoFilter lancamentoFilter, Pageable pageable) {
+        return lancamentoService.listar(lancamentoFilter, pageable);
     }
 
     @GetMapping("/{codigo}")
