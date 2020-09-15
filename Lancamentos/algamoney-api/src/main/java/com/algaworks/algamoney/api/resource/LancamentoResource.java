@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.algaworks.algamoney.api.exceptionhandler.ExceptionHandler.Erro;
@@ -32,17 +33,20 @@ public class LancamentoResource {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public Page<Lancamento> pesquisa(LancamentoFilter lancamentoFilter, Pageable pageable) {
         return lancamentoService.listar(lancamentoFilter, pageable);
     }
 
     @GetMapping("/{codigo}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public ResponseEntity busca(@PathVariable Long codigo) {
         Optional<Lancamento> lancamento = lancamentoService.buscar(codigo);
         return lancamento.isPresent() ? ResponseEntity.ok(lancamento.get()) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
     public ResponseEntity salva(@Valid @RequestBody Lancamento lancamento) {
         Lancamento lancamentoSalvo = lancamentoService.salvar(lancamento);
         return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
@@ -50,6 +54,7 @@ public class LancamentoResource {
 
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
     public void remove(@PathVariable Long codigo) {
         lancamentoService.remover(codigo);
     }
