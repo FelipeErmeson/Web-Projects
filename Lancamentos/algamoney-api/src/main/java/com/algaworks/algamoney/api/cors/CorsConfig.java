@@ -1,5 +1,7 @@
 package com.algaworks.algamoney.api.cors;
 
+import com.algaworks.algamoney.api.config.property.AlgamoneyApiProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import java.util.Collections;
 @Configuration
 public class CorsConfig {
 
+    @Autowired
+    private AlgamoneyApiProperty algamoneyApiProperty;
+
     @Bean
     public FilterRegistrationBean<CorsFilter> customCorsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -20,7 +25,7 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
-        config.addAllowedOrigin("http://localhost:8000"); //TODO: Lembrar de mudar de acordo com o ambiente
+        config.addAllowedOrigin(algamoneyApiProperty.getOriginPermitida());
         config.addAllowedOrigin("http://production.url");
         config.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", config);
